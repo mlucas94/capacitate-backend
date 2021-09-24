@@ -4,6 +4,7 @@ package ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -50,7 +51,7 @@ public class Curso {
     }
 
     public Curso(Integer id, String nombre, Integer costo, String docente, String direccion,
-                 String localidad, List<String> cuposReservados, Integer cupos) {
+                 String localidad, List<String> cuposReservados, Integer cupos, LocalDate fechaInicio) {
         this.id = id;
         this.nombre = nombre;
         this.costo = costo;
@@ -59,6 +60,7 @@ public class Curso {
         this.localidad = localidad;
         this.reservas = cuposReservados;
         this.cupos = cupos;
+        this.fechaInicio = fechaInicio;
     }
 
     public Integer getId() {
@@ -133,7 +135,7 @@ public class Curso {
         if(!hayCuposDisponibles()) {
             throw new Exception("El curso no tiene mas cupos disponibles");
         } else {
-            reservas.add(dni);
+            this.reservas.add(dni);
         }
     }
 
@@ -146,8 +148,10 @@ public class Curso {
     }
 
     public boolean hayCuposDisponibles() {
-        return this.reservas.size() < this.cupos;
+        return this.reservas.size() < this.cupos ;
     }
+
+    public Integer getCuposDisponibles() { return this.cupos - this.reservas.size(); }
 
     public LocalDate getFechaInicio() {
         return fechaInicio;
@@ -157,9 +161,7 @@ public class Curso {
         this.fechaInicio = fechaInicio;
     }
 
-    public boolean terminaronInscripciones() {
-        return this.fechaInicio.isAfter(LocalDate.now());
-    }
+    public boolean terminaronInscripciones() { return LocalDate.now().isAfter(this.fechaInicio); }
 }
 
 
