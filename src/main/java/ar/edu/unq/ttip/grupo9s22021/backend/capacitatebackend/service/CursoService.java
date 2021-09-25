@@ -26,4 +26,15 @@ public class CursoService {
     public List<Curso> findAll() {
         return repository.findAll();
     }
+
+    public Curso agregarReserva(Integer id) throws Exception {
+        Optional<Curso> resultado = repository.findById(id);
+        if(resultado.isPresent()) {
+            Curso curso = resultado.get();
+            curso.reservarCupo("1234");
+            repository.save(curso);
+            return curso;
+        }
+        return null;
+    }
 }

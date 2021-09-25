@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -33,5 +34,16 @@ public class CursoWebService {
     public ResponseEntity<List<Curso>> allCursos() {
         List<Curso> foundCursos = service.findAll();
         return ResponseEntity.ok(foundCursos);
+    }
+
+    @PostMapping("/api/curso/{id}")
+    public ResponseEntity<Curso> agregarReserva(@PathVariable Integer id) throws Exception {
+        Curso unCurso = service.agregarReserva(id);
+        if(unCurso == null) {
+            return ResponseEntity.notFound().build();
+        }
+        else{
+            return ResponseEntity.ok(unCurso);
+        }
     }
 }
