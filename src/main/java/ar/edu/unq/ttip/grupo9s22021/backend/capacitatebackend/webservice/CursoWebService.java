@@ -1,9 +1,11 @@
 package ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.webservice;
 
 import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.Curso;
+import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.exception.CursoLlenoException;
 import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.service.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,13 +39,20 @@ public class CursoWebService {
     }
 
     @PostMapping("/api/curso/{id}")
-    public ResponseEntity<Curso> agregarReserva(@PathVariable Integer id) throws Exception {
-        Curso unCurso = service.agregarReserva(id);
-        if(unCurso == null) {
-            return ResponseEntity.notFound().build();
-        }
-        else{
-            return ResponseEntity.ok(unCurso);
+    public ResponseEntity agregarReserva(@PathVariable Integer id) throws Exception {
+
+        try {
+            Curso unCurso = service.agregarReserva(id);
+            if(unCurso == null) {
+                return ResponseEntity.notFound().build();
+            }
+            else{
+                return ResponseEntity.ok(unCurso);
+            }
+        } catch (CursoLlenoException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(e.getMessage());
         }
     }
 }

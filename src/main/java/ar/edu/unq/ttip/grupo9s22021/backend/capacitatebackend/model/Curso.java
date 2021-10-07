@@ -2,6 +2,8 @@ package ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model;
 
 
 
+import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.exception.CursoLlenoException;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -131,9 +133,9 @@ public class Curso {
         this.reservas = cuposReservados;
     }
 
-    public void reservarCupo(String dni) throws Exception {
+    public void reservarCupo(String dni) throws CursoLlenoException {
         if(!hayCuposDisponibles()) {
-            throw new Exception("El curso no tiene mas cupos disponibles");
+            throw new CursoLlenoException("El curso no tiene mas cupos disponibles");
         } else {
             this.reservas.add(dni);
         }
