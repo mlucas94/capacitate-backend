@@ -1,12 +1,12 @@
 package ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model;
 
-
-
 import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.exception.CursoLlenoException;
+import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.exception.CursoYaComenzoException;
+import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.exception.NoEstaInscriptoException;
+import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.exception.UsuarioYaReservoException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -133,11 +133,37 @@ public class Curso {
         this.reservas = cuposReservados;
     }
 
-    public void reservarCupo(String dni) throws CursoLlenoException {
-        if(!hayCuposDisponibles()) {
-            throw new CursoLlenoException("El curso no tiene mas cupos disponibles");
-        } else {
+    public void reservarCupo(String dni) throws CursoLlenoException, UsuarioYaReservoException, CursoYaComenzoException {
+        if(puedeReservarCupo(dni)) {
             this.reservas.add(dni);
+        }
+    }
+
+    public boolean puedeReservarCupo(String dni) throws CursoLlenoException, CursoYaComenzoException, UsuarioYaReservoException {
+        if(!hayCuposDisponibles()) {
+            throw new CursoLlenoException();
+        } else if(terminaronInscripciones()) {
+            throw new CursoYaComenzoException();
+        } else if(estaInscripto(dni)) {
+            throw new UsuarioYaReservoException(dni);
+        } else {
+            return true;
+        }
+    }
+
+    public void cancelarReserva(String dni) throws NoEstaInscriptoException, CursoYaComenzoException {
+        if(puedeCancelarReserva(dni)) {
+            this.reservas.remove(dni);
+        }
+    }
+
+    public boolean puedeCancelarReserva(String dni) throws NoEstaInscriptoException, CursoYaComenzoException {
+        if(terminaronInscripciones()) {
+            throw new CursoYaComenzoException();
+        } else if (!estaInscripto(dni)) {
+            throw new NoEstaInscriptoException(dni);
+        } else {
+            return true;
         }
     }
 
@@ -164,6 +190,8 @@ public class Curso {
     }
 
     public boolean terminaronInscripciones() { return LocalDate.now().isAfter(this.fechaInicio); }
+
+    public boolean estaInscripto(String dni) { return this.reservas.contains(dni); }
 }
 
 
