@@ -1,5 +1,6 @@
 package ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.webservice.auth;
 
+import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.Usuario;
 import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.auth.JwtRequest;
 import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.auth.JwtResponse;
 import ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model.auth.JwtTokenUtil;
@@ -11,11 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
@@ -51,5 +48,10 @@ public class JwtAuthenticationController {
         } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
+    }
+
+    @PostMapping(value = "/register")
+    public ResponseEntity guardarUsuario(@RequestBody Usuario user) throws Exception {
+        return ResponseEntity.ok(userDetailsService.save(user));
     }
 }
