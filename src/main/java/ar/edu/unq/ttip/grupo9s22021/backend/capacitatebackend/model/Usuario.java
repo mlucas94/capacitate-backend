@@ -1,5 +1,7 @@
 package ar.edu.unq.ttip.grupo9s22021.backend.capacitatebackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -20,6 +22,7 @@ public class Usuario {
     private String dni;
 
     @Column
+    @JsonIgnore
     private String password;
 
     public Usuario() { super(); }
